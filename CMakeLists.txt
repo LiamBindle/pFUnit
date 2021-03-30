@@ -55,7 +55,6 @@ option (SKIP_OPENMP "Skip OpenMP compiler options." NO)
 option (SKIP_FHAMCREST "Skip building fHamcrest support" NO)
 option (SKIP_ROBUST "Skip building RobustRunner" NO)
 option (SKIP_ESMF "Skip building ESMF support" YES)
-option (ENABLE_TESTS "Build pFUnit tests" ${MAIN_PROJECT})
 
 
 
@@ -135,13 +134,15 @@ add_subdirectory (src)
 add_subdirectory (include)
 add_subdirectory (bin)
 
-if (ENABLE_TESTS)
+if (BUILD_TESTING)
   enable_testing()
   add_custom_target(build-tests)
 
-  add_custom_target(tests
-    COMMAND ${CMAKE_CTEST_COMMAND}
-    EXCLUDE_FROM_ALL)
+  if (NOT TARGET tests)
+    add_custom_target(tests
+      COMMAND ${CMAKE_CTEST_COMMAND}
+      EXCLUDE_FROM_ALL)
+  endif ()
   add_dependencies(tests build-tests)
 
   add_subdirectory (tests EXCLUDE_FROM_ALL)
